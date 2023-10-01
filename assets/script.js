@@ -5,6 +5,8 @@ var userCity = document.querySelector("#search-form");
 var searchHistory = document.querySelector("#search-history")
 var currWXContainer = document.querySelector("#current-container");
 var fiveDayContainer = document.querySelector("#five-day-container");
+// var weatherIcons =
+
 
 
 
@@ -43,27 +45,76 @@ function getCurrWX(cityInput) {
 
 
             displayCurrWX(currWXdata);
-            //need to grab long and lat and do another fetch to get 5 Day forecast
+
+            // Parse latitude and longitude from CurrWXData
             var lat = currWXdata.coord.lat;
             var lon = currWXdata.coord.lon;
-            console.log(lat);
-            console.log(lon);
+            // console.log(lat);
+            // console.log(lon);
+
+            getFiveDayWX();
+
+            // Function to fetch 5 day forecast for entered city
+            function getFiveDayWX() {
+                var fiveDayWXURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&" + "lon=" + lon + "&appid=" + APIKey + "&units=imperial";
+
+                fetch(fiveDayWXURL)
+                    .then(function (response) {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(function (fiveDayWXData) {
+                        console.log(fiveDayWXData);
 
 
+                        var dateTime = [];
+
+                        for (let i = 0; i < fiveDayWXData.list.length; i++) {
+                            var dateTimeArr = fiveDayWXData.list[i].dt_txt.split(" ");
+                            dateTime.push(...dateTimeArr);
+                            console.log(dateTimeArr);
+
+                            var date = [];
+
+                            for (let i = 0; i < dateTimeArr.length; i++) {
+                            var dateArr = dateTimeArr[i].split(",");
+                            date.push(...dateArr);
+                            console.log(dateArr);
+                            }
+                        }
+
+                        // Attempting to use UNIX instead of above
+
+                        // var dateNew = [];
+
+                        // for (let i = 0; i < fiveDayWXData.list.length; i++) {
+                        //     var dateArrNew = fiveDayWXData.list[i].dt;
+                        //     dateNew.push(...dateArrNew);
+                        //     console.log(dateArrNew);
+                        // }
+
+
+
+
+                        // displayFiveDayWX(fiveDayWXData);
+                    })
+            }
         })
         .catch(function (error) {
             console.error(error.message);
         });
 }
 
+// Display current weather data on right portion of screen
 function displayCurrWX(currWXdata) {
-    
+
     var currWXCityDate = document.createElement("h3");
     var currWXTemp = document.createElement("p");
     var currWXWind = document.createElement("p");
     var currWXHum = document.createElement("p");
     currWXContainer.textContent = "";
-    currWXCityDate.textContent = currWXdata.name + "  (" + currentDay + ")";
+    currWXCityDate.textContent = currWXdata.name + "  (" + currentDay + ")"
     currWXTemp.textContent = "Temp: " + currWXdata.main.temp + " °F";
     currWXWind.textContent = "Wind: " + currWXdata.wind.speed + " MPH";
     currWXHum.textContent = "Humidity: " + currWXdata.main.humidity + "%";
@@ -73,14 +124,18 @@ function displayCurrWX(currWXdata) {
     currWXContainer.append(currWXHum);
 }
 
+// Display five day forecast in individual cards for each day
+// function displayFiveDayWX(fiveDayWXData) {
 
- 
-  
+// }
+
+
 
 
 
 userCity.addEventListener('submit', formSubmitHandler);
-console.log(userCity);
+// console.log(userCity);
 
-console.log(currentDay);
+// console.log(currentDay);
+
 
