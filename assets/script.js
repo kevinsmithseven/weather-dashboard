@@ -68,33 +68,45 @@ function getCurrWX(cityInput) {
                         console.log(fiveDayWXData);
 
 
-                        var dateTime = [];
+                        // var dateTime = [];
 
-                        for (let i = 0; i < fiveDayWXData.list.length; i++) {
-                            var dateTimeArr = fiveDayWXData.list[i].dt_txt.split(" ");
-                            dateTime.push(...dateTimeArr);
-                            console.log(dateTimeArr);
+                        // for (let i = 0; i < fiveDayWXData.list.length; i++) {
+                        //     var dateTimeArr = fiveDayWXData.list[i].dt_txt.split(" ");
+                        //     dateTime.push(...dateTimeArr);
+                        //     console.log(dateTimeArr);
 
-                            var date = [];
+                        //     var date = [];
 
-                            for (let i = 0; i < dateTimeArr.length; i++) {
-                            var dateArr = dateTimeArr[i].split(",");
-                            date.push(...dateArr);
-                            console.log(dateArr);
-                            }
-                        }
+                        //     for (let i = 0; i < dateTimeArr.length; i++) {
+                        //     var dateArr = dateTimeArr[i].split(",");
+                        //     date.push(...dateArr);
+                        //     console.log(dateArr);
+                        //     }
+                        // }
 
                         // Attempting to use UNIX instead of above
 
-                        // var dateNew = [];
+                        var dateNew = [];
 
-                        // for (let i = 0; i < fiveDayWXData.list.length; i++) {
-                        //     var dateArrNew = fiveDayWXData.list[i].dt;
-                        //     dateNew.push(...dateArrNew);
-                        //     console.log(dateArrNew);
-                        // }
+                        for (let i = 0; i < fiveDayWXData.list.length; i++) {
+                            var dateArrNew = fiveDayWXData.list[i].dt;
+                            var reformatDate = dayjs.unix(dateArrNew).format("MM/DD/YYYY");
+                            dateNew.push(reformatDate);
+                            console.log(dateNew);
+                        }
 
+                        // Calculate average temp - how do I associate with the date and exclude current day?
+                        var totalTemp = 0;
+                        for (let i = 0; i < fiveDayWXData.list.length; i++) {
+                            var temp = fiveDayWXData.list[i].main.temp;
+                            totalTemp += temp;
+                        }
+                        var avgTemp = totalTemp / fiveDayWXData.list.length;
+                        console.log(avgTemp);
+                        var avgTempRound = Math.round(avgTemp * 100) / 100;
+                        console.log(avgTempRound);
 
+                        
 
 
                         // displayFiveDayWX(fiveDayWXData);
@@ -122,6 +134,10 @@ function displayCurrWX(currWXdata) {
     currWXContainer.append(currWXTemp);
     currWXContainer.append(currWXWind);
     currWXContainer.append(currWXHum);
+
+    // Attempting to append an image based on description in array
+    // if (currWXdata.weather[0].description = "few clouds")
+    //     currWXCityDate.appendChild()
 }
 
 // Display five day forecast in individual cards for each day
