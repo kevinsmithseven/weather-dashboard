@@ -37,7 +37,7 @@ function getCurrWX(cityInput) {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error("City not found");
+                alert("City not found");
             }
         })
         .then(function (currWXdata) {
@@ -47,6 +47,10 @@ function getCurrWX(cityInput) {
             // Call function to display current day weather info
             displayCurrWX(currWXdata);
 
+            // Store city in local storage
+            // storeCityHist(cityInput);
+
+            
             // Parse latitude and longitude from CurrWXData
             var lat = currWXdata.coord.lat;
             var lon = currWXdata.coord.lon;
@@ -77,6 +81,7 @@ function getFiveDayWX(lat, lon) {
 
 
             var thisDay = dayjs(currentDay);
+            fiveDayContainer[0].innerHTML = "";
 
             for (let i = 0; i < fiveDayWXData.list.length; i++) {
                 const d = fiveDayWXData.list[i];
@@ -117,6 +122,7 @@ function displayCurrWX(currWXdata) {
 //* Display five day forecast in individual cards for each day
 
 function displayFiveDayWX(dayObj) {
+    
     var cardHTML = $(`
     <div class="col">
         <div class="card">
@@ -138,20 +144,42 @@ function displayFiveDayWX(dayObj) {
 
 
 function storeCityHist(cityInput) {
-    localStorage.setItem("city", cityInput);
+    var cityHistory = JSON.parse(localStorage.getItem("cityHist")) || [];
+    console.log(cityHistory);
+    cityHistory.push(cityInput);
+
+    localStorage.setItem("cityHist", JSON.stringify(cityHistory));
+    console.log(cityHistory);
+
+    displayCityHist(cityHistory);
 }
 
-function displayCityHist() {
+// Retrieve cities from local storage and create clickable buttons that search for that city
+function displayCityHist(cityHistory) {
+    searchHistory.innerHTML = "";
+    console.log(cityHistory);
+    for (let i = 0; i < cityHistory.length; i++) {
+        var cityList = cityHistory[i];
+
+        var cityButton = document.createElement("button");
+        cityButton.textContent = cityList;
+
+        cityButton.addEventListener("click", function () {
+
+            
+        });
+        searchHistory.appendChild(cityButton);
+    }
     
 }
 
-
+// displayCityHist();
 
 
 
 userCity.addEventListener('submit', formSubmitHandler);
-// console.log(userCity);
 
+// console.log(userCity);
 // console.log(currentDay);
 
 
