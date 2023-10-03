@@ -36,12 +36,11 @@ function getCurrWX(cityInput) {
             }
         })
         .then(function (currWXdata) {
-            //display data logic
+            
             console.log(currWXdata);
 
             // Call function to display current day weather info
             displayCurrWX(currWXdata);
-
             
             // Parse latitude and longitude from CurrWXData
             var lat = currWXdata.coord.lat;
@@ -50,7 +49,6 @@ function getCurrWX(cityInput) {
             // console.log(lon);
 
             getFiveDayWX(lat, lon);
-
 
         })
         .catch(function (error) {
@@ -89,7 +87,7 @@ function getFiveDayWX(lat, lon) {
         })
 }
 
-// Display current weather data on right portion of screen
+// Display current weather data on right side of screen
 function displayCurrWX(currWXdata) {
 
     var currWXCityDate = document.createElement("h3");
@@ -130,6 +128,7 @@ function displayFiveDayWX(dayObj) {
 }
 
 
+// Retrieve and store searched cities in local storage
 function storeCityHist(cityInput) {
     var cityHistory = JSON.parse(localStorage.getItem("cityHist")) || [];
     console.log(cityHistory);
@@ -150,6 +149,7 @@ function displayCityHist(cityHistory) {
 
         var cityButton = document.createElement("button");
         cityButton.textContent = cityList;
+        cityButton.classList = "btn btn-secondary btn-block m-2"
 
         cityButton.addEventListener("click", function () {
         });
@@ -158,7 +158,6 @@ function displayCityHist(cityHistory) {
 }
 
 // Display CurrWX and fiveDayWX on a click on button on the history section
-
 function displayHistoryCity (event) {
     var clickedCity = event.target.textContent;
     
@@ -167,7 +166,7 @@ function displayHistoryCity (event) {
     }
 }
 
-
+// Event listeners
 userCity.addEventListener('submit', formSubmitHandler);
 searchHistory.addEventListener('click', displayHistoryCity)
 
