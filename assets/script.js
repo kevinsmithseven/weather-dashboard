@@ -21,7 +21,7 @@ function formSubmitHandler(event) {
     if (cityInput) {
         getCurrWX(cityInput);
 
-        // TODO Add call go function that adds city to local storage and add clickable button
+        storeCityHist(cityInput);
 
     } else {
         alert("Please enter a valid city name");
@@ -137,9 +137,11 @@ function displayFiveDayWX(dayObj) {
 }
 
 
-// TODO  function to store city input and create submittable buttons that call the getCurrWX and getFiveDayWX functions - how do I limit the number stored?
-
 function storeCityHist(cityInput) {
+    localStorage.setItem("city", cityInput);
+}
+
+function displayCityHist() {
     
 }
 
