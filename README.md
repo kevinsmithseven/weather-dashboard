@@ -8,9 +8,11 @@ When a user searches for a city, a button will be created below the search bar t
 
 The input field is not case sensitive in case the user forgets to capitalize the name of the city.
 
+Future enhancements will include better mobile responsiveness for the header and a more stylish UI/UX.
+
 Link to application:
 
-<!-- add link to deployed application   -->
+https://kevinsmithseven.github.io/weather-dashboard/
 
 ## Usage
 
