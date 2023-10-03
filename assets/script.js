@@ -5,11 +5,6 @@ var userCity = document.querySelector("#search-form");
 var searchHistory = document.querySelector("#search-history")
 var currWXContainer = document.querySelector("#current-container");
 var fiveDayContainer = $("#five-day-container");
-// var weatherIcons =
-// TODO need to add icon logic - there is a path to an icon in the API data at weather[i].icon, but no image
-
-
-
 
 
 // Handles click or enter press by user and checks if City exists
@@ -47,9 +42,6 @@ function getCurrWX(cityInput) {
             // Call function to display current day weather info
             displayCurrWX(currWXdata);
 
-            // Store city in local storage
-            // storeCityHist(cityInput);
-
             
             // Parse latitude and longitude from CurrWXData
             var lat = currWXdata.coord.lat;
@@ -84,14 +76,14 @@ function getFiveDayWX(lat, lon) {
             fiveDayContainer[0].innerHTML = "";
 
             for (let i = 0; i < fiveDayWXData.list.length; i++) {
-                const d = fiveDayWXData.list[i];
+                const daysArr = fiveDayWXData.list[i];
 
-                if (dayjs(d.dt_txt).isSame(thisDay.add(1, "day"))) {
+                if (dayjs(daysArr.dt_txt).isSame(thisDay.add(1, "day"))) {
                     console.log("found next day");
                     //display day
-                    displayFiveDayWX(d);
+                    displayFiveDayWX(daysArr);
                     //update thisDay
-                    thisDay = dayjs(d.dt_txt);
+                    thisDay = dayjs(daysArr.dt_txt);
                 }
             }
         })
@@ -112,17 +104,12 @@ function displayCurrWX(currWXdata) {
     currWXContainer.append(currWXCityDate);
     currWXContainer.append(currWXTemp);
     currWXContainer.append(currWXWind);
-    currWXContainer.append(currWXHum);
-
-    //* Attempting to append an image based on description in array
-    // if (currWXdata.weather[0].description = "few clouds")
-    //     currWXCityDate.appendChild()
+    currWXContainer.append(currWXHum);    
 }
 
-//* Display five day forecast in individual cards for each day
-
+// Display five day forecast in individual cards for each day
 function displayFiveDayWX(dayObj) {
-    
+
     var cardHTML = $(`
     <div class="col">
         <div class="card">
@@ -165,21 +152,25 @@ function displayCityHist(cityHistory) {
         cityButton.textContent = cityList;
 
         cityButton.addEventListener("click", function () {
-
-            
         });
         searchHistory.appendChild(cityButton);
     }
-    
 }
 
-// displayCityHist();
+// Display CurrWX and fiveDayWX on a click on button on the history section
 
+function displayHistoryCity (event) {
+    var clickedCity = event.target.textContent;
+    
+    if (event.target.textContent = clickedCity) {
+        getCurrWX(clickedCity);
+    }
+}
 
 
 userCity.addEventListener('submit', formSubmitHandler);
+searchHistory.addEventListener('click', displayHistoryCity)
 
-// console.log(userCity);
-// console.log(currentDay);
+
 
 
