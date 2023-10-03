@@ -4,8 +4,9 @@ var currentDay = dayjs().format('MM/DD/YYYY');
 var userCity = document.querySelector("#search-form");
 var searchHistory = document.querySelector("#search-history")
 var currWXContainer = document.querySelector("#current-container");
-var fiveDayContainer = document.querySelector("#five-day-container");
+var fiveDayContainer = $("#five-day-container");
 // var weatherIcons =
+// TODO need to add icon logic - there is a path to an icon in the API data at weather[i].icon, but no image
 
 
 
@@ -20,7 +21,7 @@ function formSubmitHandler(event) {
     if (cityInput) {
         getCurrWX(cityInput);
 
-        // Add city to local storage and add clickable button
+        // TODO Add call go function that adds city to local storage and add clickable button
 
     } else {
         alert("Please enter a valid city name");
@@ -43,7 +44,7 @@ function getCurrWX(cityInput) {
             //display data logic
             console.log(currWXdata);
 
-
+            // Call function to display current day weather info
             displayCurrWX(currWXdata);
 
             // Parse latitude and longitude from CurrWXData
@@ -52,70 +53,43 @@ function getCurrWX(cityInput) {
             // console.log(lat);
             // console.log(lon);
 
-            getFiveDayWX();
-
-            // Function to fetch 5 day forecast for entered city
-            function getFiveDayWX() {
-                var fiveDayWXURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&" + "lon=" + lon + "&appid=" + APIKey + "&units=imperial";
-
-                fetch(fiveDayWXURL)
-                    .then(function (response) {
-                        if (response.ok) {
-                            return response.json();
-                        }
-                    })
-                    .then(function (fiveDayWXData) {
-                        console.log(fiveDayWXData);
+            getFiveDayWX(lat, lon);
 
 
-                        // var dateTime = [];
-
-                        // for (let i = 0; i < fiveDayWXData.list.length; i++) {
-                        //     var dateTimeArr = fiveDayWXData.list[i].dt_txt.split(" ");
-                        //     dateTime.push(...dateTimeArr);
-                        //     console.log(dateTimeArr);
-
-                        //     var date = [];
-
-                        //     for (let i = 0; i < dateTimeArr.length; i++) {
-                        //     var dateArr = dateTimeArr[i].split(",");
-                        //     date.push(...dateArr);
-                        //     console.log(dateArr);
-                        //     }
-                        // }
-
-                        // Attempting to use UNIX instead of above
-
-                        var dateNew = [];
-
-                        for (let i = 0; i < fiveDayWXData.list.length; i++) {
-                            var dateArrNew = fiveDayWXData.list[i].dt;
-                            var reformatDate = dayjs.unix(dateArrNew).format("MM/DD/YYYY");
-                            dateNew.push(reformatDate);
-                            console.log(dateNew);
-                        }
-
-                        // Calculate average temp - how do I associate with the date and exclude current day?
-                        var totalTemp = 0;
-                        for (let i = 0; i < fiveDayWXData.list.length; i++) {
-                            var temp = fiveDayWXData.list[i].main.temp;
-                            totalTemp += temp;
-                        }
-                        var avgTemp = totalTemp / fiveDayWXData.list.length;
-                        console.log(avgTemp);
-                        var avgTempRound = Math.round(avgTemp * 100) / 100;
-                        console.log(avgTempRound);
-
-                        
-
-
-                        // displayFiveDayWX(fiveDayWXData);
-                    })
-            }
         })
         .catch(function (error) {
             console.error(error.message);
         });
+}
+
+// Function to fetch 5 day forecast for entered city
+function getFiveDayWX(lat, lon) {
+    var fiveDayWXURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&" + "lon=" + lon + "&appid=" + APIKey + "&units=imperial";
+
+    fetch(fiveDayWXURL)
+        .then(function (response) {
+            if (response.ok) {
+                return response.json();
+            }
+        })
+        .then(function (fiveDayWXData) {
+            console.log(fiveDayWXData);
+
+
+            var thisDay = dayjs(currentDay);
+
+            for (let i = 0; i < fiveDayWXData.list.length; i++) {
+                const d = fiveDayWXData.list[i];
+
+                if (dayjs(d.dt_txt).isSame(thisDay.add(1, "day"))) {
+                    console.log("found next day");
+                    //display day
+                    displayFiveDayWX(d);
+                    //update thisDay
+                    thisDay = dayjs(d.dt_txt);
+                }
+            }
+        })
 }
 
 // Display current weather data on right portion of screen
@@ -135,15 +109,39 @@ function displayCurrWX(currWXdata) {
     currWXContainer.append(currWXWind);
     currWXContainer.append(currWXHum);
 
-    // Attempting to append an image based on description in array
+    //* Attempting to append an image based on description in array
     // if (currWXdata.weather[0].description = "few clouds")
     //     currWXCityDate.appendChild()
 }
 
-// Display five day forecast in individual cards for each day
-// function displayFiveDayWX(fiveDayWXData) {
+//* Display five day forecast in individual cards for each day
 
-// }
+function displayFiveDayWX(dayObj) {
+    var cardHTML = $(`
+    <div class="col">
+        <div class="card">
+        <img src="https://openweathermap.org/img/wn/${dayObj.weather[0].icon}@2x.png" class="card-img-top" alt="${dayObj.weather[0].description}">
+        <div class="card-body">
+            <h5 class="card-title">${dayjs(dayObj.dt_txt).format("MM/DD/YYYY")}</h5>
+            <ul>
+            <li>Temp: ${dayObj.main.temp} °F</li>
+            <li>Wind: ${dayObj.wind.speed} MPH</li>
+            <li>Humidity: ${dayObj.main.humidity}%</li>
+            </ul>
+        </div>
+        </div>
+    </div>
+    `);
+
+    fiveDayContainer.append(cardHTML);
+}
+
+
+// TODO  function to store city input and create submittable buttons that call the getCurrWX and getFiveDayWX functions - how do I limit the number stored?
+
+function storeCityHist(cityInput) {
+    
+}
 
 
 
