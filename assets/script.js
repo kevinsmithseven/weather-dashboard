@@ -69,6 +69,7 @@ function getFiveDayWX(lat, lon) {
         .then(function (fiveDayWXData) {
             console.log(fiveDayWXData);
 
+            let dayCounter = 0;
 
             var thisDay = dayjs(currentDay);
             fiveDayContainer[0].innerHTML = "";
@@ -76,13 +77,15 @@ function getFiveDayWX(lat, lon) {
             for (let i = 0; i < fiveDayWXData.list.length; i++) {
                 const daysArr = fiveDayWXData.list[i];
 
-                if (dayjs(daysArr.dt_txt).isSame(thisDay.add(1, "day"))) {
+                if (dayjs(daysArr.dt_txt).isSame(thisDay.add(1, "day"),'day')) {
                     console.log("found next day");
+                    dayCounter ++;
                     //display day
                     displayFiveDayWX(daysArr);
                     //update thisDay
                     thisDay = dayjs(daysArr.dt_txt);
-                }
+                } 
+                if (dayCounter === 5) break;
             }
         })
 }
